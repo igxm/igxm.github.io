@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>m3u8文件下载并合并 | Allen&#39;s blog</title>
+
+  
+  <meta name="author" content="Guo">
+  
+
+  
+  <meta name="description" content="原由：最近在极客时间上购买一波 Go语言从入门到实战 视频课程，但又不想受到网络环境的限制，所以就有了这篇文章。
+操作：一、ffmpeg 下载和安装
+
+mac OS X ：12345# 安装 homebrew/usr/bin/ruby -e &#34;$(curl -fsSL https://raw.git">
+  
+
+  
+  
+  <meta name="keywords" content="Go,Linux">
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <meta property="og:title" content="m3u8文件下载并合并"/>
+
+  <meta property="og:site_name" content="Allen&#39;s blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Allen&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">Allen&#39;s blog</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    <article>
+
+  
+    
+    <h3 class="article-title"><span>m3u8文件下载并合并</span></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/04/02/m3u8文件下载并合并/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-04-02T02:49:35.000Z">
+          2019-04-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="原由："><a href="#原由：" class="headerlink" title="原由："></a>原由：</h2><p>最近在极客时间上购买一波 <code>Go语言从入门到实战</code> 视频课程，但又不想受到网络环境的限制，所以就有了这篇文章。</p>
+<h2 id="操作："><a href="#操作：" class="headerlink" title="操作："></a>操作：</h2><p>一、ffmpeg 下载和安装</p>
+<ul>
+<li>mac OS X ：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 homebrew</span></span><br><span class="line">/usr/bin/ruby -e <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 ffmpeg</span></span><br><span class="line">brew install ffmpeg</span><br></pre></td></tr></table></figure></li>
+<li>Linux 安装：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ffmpeg</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>二、使用ffmpeg下载且合并成mp4</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg  -i <span class="string">"http://xxxxxx/video/movie.m3u8"</span> -vcodec copy -acodec copy -absf aac_adtstoasc  output.mp4</span><br><span class="line"></span><br><span class="line"><span class="comment"># m3u8 链接， output.mp4 输出文件名</span></span><br></pre></td></tr></table></figure>
+
+<p>三、使用Go实现批量合并</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/json"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"io/ioutil"</span></span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line">    <span class="string">"os/exec"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Datas <span class="keyword">struct</span> &#123;</span><br><span class="line">    Data List <span class="string">`json:"data"`</span> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">    L []VideoMap <span class="string">`json:"list"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> VideoMap <span class="keyword">struct</span> &#123;</span><br><span class="line">    ArticleTitle  <span class="keyword">string</span> <span class="string">`json:"article_title"`</span></span><br><span class="line">    VideoMediaMap <span class="keyword">struct</span> &#123;</span><br><span class="line">    HD <span class="keyword">struct</span> &#123;</span><br><span class="line">        URL  <span class="keyword">string</span> <span class="string">`json:"url"`</span></span><br><span class="line">        Size <span class="keyword">int64</span>  <span class="string">`json:"size"`</span></span><br><span class="line">        &#125; <span class="string">`json:"hd"`</span></span><br><span class="line">    &#125; <span class="string">`json:"video_media_map"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    video Datas</span><br><span class="line">    path  <span class="keyword">string</span> = <span class="string">"/Users/gxm/Movies/time_go/"</span> <span class="comment">// 保存文件的路径</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    body, err := ioutil.ReadFile(<span class="string">"./ Go语言从入门到实战.json"</span>) # m3u8 视频列表的json文件</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatalln(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = json.Unmarshal(body, &amp;video)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatalln(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// fmt.Println(video)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> video.L &#123;</span><br><span class="line">        fmt.Println(v.VideoMediaMap.HD.URL, v.ArticleTitle)</span><br><span class="line">        merge(v.VideoMediaMap.HD.URL, v.ArticleTitle)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//ffmpeg  -i "http://xxxxxx/video/movie.m3u8" -vcodec copy -acodec copy -absf aac_adtstoasc  output.mp4</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">merge</span><span class="params">(url <span class="keyword">string</span>, name <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    cmd := exec.Command(<span class="string">"ffmpeg"</span>, <span class="string">"-i"</span>, url, <span class="string">"-vcodec"</span>, <span class="string">"copy"</span>, <span class="string">"-acodec"</span>, <span class="string">"copy"</span>, <span class="string">"-absf"</span>, <span class="string">"aac_adtstoasc"</span>, path+name+<span class="string">".mp4"</span>)</span><br><span class="line">    message, err := cmd.CombinedOutput()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    log.Println(<span class="keyword">string</span>(message))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>要是不想把m3u8的数据json下载本地在运行的话，你可以使用爬虫模拟登录去获m3u8的数据，然后在去执行<code>merge</code>函数来合并。</p>
+<blockquote>
+<p>本文章仅提供学习，如有违规和侵权请联系本人。</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/Go/">Go</a>, <a href="/categories/Go/Linux/">Linux</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Go/">Go</a><a href="/tags/Linux/">Linux</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+  
+
+
+
+
+
+
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 Guo
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>

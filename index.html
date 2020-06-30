@@ -1,0 +1,769 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Allen&#39;s blog</title>
+
+  
+  <meta name="author" content="Guo">
+  
+
+  
+
+  
+
+  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  
+
+  <meta property="og:site_name" content="Allen&#39;s blog"/>
+
+  
+  <meta property="og:image" content="/favicon.ico"/>
+  
+
+  <link href="/favicon.ico" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Allen&#39;s blog" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+<div class="blog">
+  <div class="content">
+
+    <header>
+  <div class="site-branding">
+    <h1 class="site-title">
+      <a href="/">Allen&#39;s blog</a>
+    </h1>
+    <p class="site-description"></p>
+  </div>
+  <nav class="site-navigation">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/categories">Categories</a></li>
+      
+        <li><a href="/tags">Tags</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+    </ul>
+  </nav>
+</header>
+
+    <main class="site-main posts-loop">
+    
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2019/04/02/m3u8文件下载并合并/"><span>m3u8文件下载并合并</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/04/02/m3u8文件下载并合并/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-04-02T02:49:35.000Z">
+          2019-04-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="原由："><a href="#原由：" class="headerlink" title="原由："></a>原由：</h2><p>最近在极客时间上购买一波 <code>Go语言从入门到实战</code> 视频课程，但又不想受到网络环境的限制，所以就有了这篇文章。</p>
+<h2 id="操作："><a href="#操作：" class="headerlink" title="操作："></a>操作：</h2><p>一、ffmpeg 下载和安装</p>
+<ul>
+<li>mac OS X ：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 homebrew</span></span><br><span class="line">/usr/bin/ruby -e <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 ffmpeg</span></span><br><span class="line">brew install ffmpeg</span><br></pre></td></tr></table></figure></li>
+<li>Linux 安装：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ffmpeg</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>二、使用ffmpeg下载且合并成mp4</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg  -i <span class="string">"http://xxxxxx/video/movie.m3u8"</span> -vcodec copy -acodec copy -absf aac_adtstoasc  output.mp4</span><br><span class="line"></span><br><span class="line"><span class="comment"># m3u8 链接， output.mp4 输出文件名</span></span><br></pre></td></tr></table></figure>
+
+<p>三、使用Go实现批量合并</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/json"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"io/ioutil"</span></span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line">    <span class="string">"os/exec"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Datas <span class="keyword">struct</span> &#123;</span><br><span class="line">    Data List <span class="string">`json:"data"`</span> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> List <span class="keyword">struct</span> &#123;</span><br><span class="line">    L []VideoMap <span class="string">`json:"list"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> VideoMap <span class="keyword">struct</span> &#123;</span><br><span class="line">    ArticleTitle  <span class="keyword">string</span> <span class="string">`json:"article_title"`</span></span><br><span class="line">    VideoMediaMap <span class="keyword">struct</span> &#123;</span><br><span class="line">    HD <span class="keyword">struct</span> &#123;</span><br><span class="line">        URL  <span class="keyword">string</span> <span class="string">`json:"url"`</span></span><br><span class="line">        Size <span class="keyword">int64</span>  <span class="string">`json:"size"`</span></span><br><span class="line">        &#125; <span class="string">`json:"hd"`</span></span><br><span class="line">    &#125; <span class="string">`json:"video_media_map"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    video Datas</span><br><span class="line">    path  <span class="keyword">string</span> = <span class="string">"/Users/gxm/Movies/time_go/"</span> <span class="comment">// 保存文件的路径</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    body, err := ioutil.ReadFile(<span class="string">"./ Go语言从入门到实战.json"</span>) # m3u8 视频列表的json文件</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatalln(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = json.Unmarshal(body, &amp;video)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatalln(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// fmt.Println(video)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _, v := <span class="keyword">range</span> video.L &#123;</span><br><span class="line">        fmt.Println(v.VideoMediaMap.HD.URL, v.ArticleTitle)</span><br><span class="line">        merge(v.VideoMediaMap.HD.URL, v.ArticleTitle)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//ffmpeg  -i "http://xxxxxx/video/movie.m3u8" -vcodec copy -acodec copy -absf aac_adtstoasc  output.mp4</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">merge</span><span class="params">(url <span class="keyword">string</span>, name <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    cmd := exec.Command(<span class="string">"ffmpeg"</span>, <span class="string">"-i"</span>, url, <span class="string">"-vcodec"</span>, <span class="string">"copy"</span>, <span class="string">"-acodec"</span>, <span class="string">"copy"</span>, <span class="string">"-absf"</span>, <span class="string">"aac_adtstoasc"</span>, path+name+<span class="string">".mp4"</span>)</span><br><span class="line">    message, err := cmd.CombinedOutput()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Println(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    log.Println(<span class="keyword">string</span>(message))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h2><p>要是不想把m3u8的数据json下载本地在运行的话，你可以使用爬虫模拟登录去获m3u8的数据，然后在去执行<code>merge</code>函数来合并。</p>
+<blockquote>
+<p>本文章仅提供学习，如有违规和侵权请联系本人。</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/Go/">Go</a>, <a href="/categories/Go/Linux/">Linux</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Go/">Go</a><a href="/tags/Linux/">Linux</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2019/03/26/Go获取服务器ip/"><span>Go获取服务器ip</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/03/26/Go获取服务器ip/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-03-26T08:09:53.000Z">
+          2019-03-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h3 id="排查负载均衡服务器中某个IP指定的服务出现故障"><a href="#排查负载均衡服务器中某个IP指定的服务出现故障" class="headerlink" title="排查负载均衡服务器中某个IP指定的服务出现故障"></a>排查负载均衡服务器中某个IP指定的服务出现故障</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"log"</span></span><br><span class="line">    <span class="string">"net/http"</span></span><br><span class="line">    <span class="string">"net/http/httptrace"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    req, err := http.NewRequest(<span class="string">"GET"</span>, <span class="string">"https://example.com/"</span>, <span class="literal">nil</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    trace := &amp;httptrace.ClientTrace&#123;</span><br><span class="line">        GotConn: <span class="function"><span class="keyword">func</span><span class="params">(connInfo httptrace.GotConnInfo)</span></span> &#123;</span><br><span class="line">            log.Printf(<span class="string">"resolved to: %s"</span>, connInfo.Conn.RemoteAddr())</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))</span><br><span class="line"></span><br><span class="line">    client := &amp;http.Client&#123;&#125;</span><br><span class="line">    _, err := client.Do(req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        log.Fatal(err)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Go/">Go</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2019/03/26/u盘启动器/"><span>u盘启动器</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/03/26/u盘启动器/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-03-26T07:53:56.000Z">
+          2019-03-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="使用MacBook-pro-制作windows-10的u盘启动器"><a href="#使用MacBook-pro-制作windows-10的u盘启动器" class="headerlink" title="使用MacBook pro 制作windows 10的u盘启动器"></a>使用MacBook pro 制作windows 10的u盘启动器</h1><h2 id="命令制作"><a href="#命令制作" class="headerlink" title="命令制作"></a>命令制作</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">diskutil list <span class="comment"># 列出本机所有的磁盘或分区</span></span><br><span class="line"></span><br><span class="line">diskutil eraseDisk MS-DOS <span class="string">"WINDOWS10"</span> MBR disk2 <span class="comment"># 把当前的u盘格式化并改名为 windows10</span></span><br><span class="line"></span><br><span class="line">cp -rp /Volumes/VolumeName/* /Volumes/WINDOWS10/  <span class="comment"># volumeName 所指windows镜像挂载后的名称</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="图："><a href="#图：" class="headerlink" title="图："></a>图：</h2><p>1、 <img src="/images/list.jpg" alt=""></p>
+<p>2、 <img src="/images/volume.jpg" alt=""></p>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Mac-OS-X/">Mac OS X</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2019/03/26/dnmp/"><span>Dnmp</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/03/26/dnmp/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-03-26T07:44:42.000Z">
+          2019-03-26
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h2 id="Docker搭建php开发环境"><a href="#Docker搭建php开发环境" class="headerlink" title="Docker搭建php开发环境"></a>Docker搭建php开发环境</h2><h2 id="Nginx："><a href="#Nginx：" class="headerlink" title="Nginx："></a>Nginx：</h2><p>拉取nginx镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull nginx</span><br></pre></td></tr></table></figure>
+
+<p>启动并运行nginx</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8080:80 -v /Users/gxm/docker/nginx:/etc/nginx/conf.d -v /Users/gxm/docker/html --name=nginx_ nginx</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>-d</code>: 后台运行容器，并返回容器ID</li>
+<li><code>-p</code>: 将容器的端口映射到宿主机的端口</li>
+<li><code>-v</code>：将宿主机目录挂载到容器目录下</li>
+<li><code>—name</code>:为容器指定一个名称</li>
+<li><code>-link</code>: 链接另一个容器</li>
+</ul>
+<h2 id="PHP7-2"><a href="#PHP7-2" class="headerlink" title="PHP7.2"></a>PHP7.2</h2><p>拉取php:7.2-fpm</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull php:7.2-fpm</span><br></pre></td></tr></table></figure>
+
+<p>启动并运行php</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 9000:9000 -v /Users/gxm/docker/html:/usr/share/nginx/html --name=php72 php:7.2-fpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取运行的php72 在docker中的ip地址</span></span><br><span class="line">docker inspect php72</span><br></pre></td></tr></table></figure>
+
+<h2 id="MySQL5-7"><a href="#MySQL5-7" class="headerlink" title="MySQL5.7:"></a>MySQL5.7:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker pull mysql:5.7</span><br><span class="line"></span><br><span class="line">docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 --name mysql mysql:5.7</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mysql 8.0 的情况下</span></span><br><span class="line">plugin caching_sha2_password could not be loaded</span><br><span class="line"></span><br><span class="line">docker <span class="built_in">exec</span> -it mysql /bin/bash</span><br><span class="line"><span class="comment"># 登录数据库</span></span><br><span class="line"></span><br><span class="line">mysql -uroot -p &#123;your password&#125;</span><br><span class="line"><span class="comment"># 使用mysql数据库</span></span><br><span class="line">mysql&gt;use mysql</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改数据库</span></span><br><span class="line">mysql&gt; ALTER USER <span class="string">'root'</span>@<span class="string">'%'</span> IDENTIFIED WITH mysql_native_password BY <span class="string">'&#123;your password&#125;'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新修改密码后可连接成功</span></span><br><span class="line">mysql&gt; alter  user <span class="string">'root'</span>@<span class="string">'%'</span> identified by <span class="string">'123456'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 刷新数据库</span></span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参数："><a href="#参数：" class="headerlink" title="参数："></a>参数：</h3><ul>
+<li><code>-e</code>:指定环境变量，容器中可以使用该环境变量</li>
+</ul>
+<h3 id="Nginx—-gt-PHP-配置"><a href="#Nginx—-gt-PHP-配置" class="headerlink" title="Nginx—&gt;PHP 配置"></a>Nginx—&gt;PHP 配置</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">    <span class="attribute">server_name</span>  _;</span><br><span class="line">    <span class="attribute">root</span>   /usr/share/nginx/html;</span><br><span class="line">    <span class="attribute">index</span>  index.php index.html index.htm;</span><br><span class="line">    <span class="comment">#charset koi8-r;</span></span><br><span class="line">    </span><br><span class="line">    <span class="attribute">access_log</span> /dev/null;</span><br><span class="line">    <span class="comment">#access_log  /var/log/nginx/nginx.localhost.access.log  main;</span></span><br><span class="line">    <span class="attribute">error_log</span>  /var/log/nginx/error.log  <span class="literal">warn</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#error_page  404              /404.html;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># redirect server error pages to the static page /50x.html</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="attribute">error_page</span>   <span class="number">500</span> <span class="number">502</span> <span class="number">503</span> <span class="number">504</span>  /50x.html;</span><br><span class="line">    <span class="attribute">location</span> = /50x.html &#123;</span><br><span class="line">        <span class="attribute">root</span>   /usr/share/nginx/html;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># proxy the PHP scripts to Apache listening on 127.0.0.1:80</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="comment">#location ~ \.php$ &#123;</span></span><br><span class="line">    <span class="comment">#    proxy_pass   http://127.0.0.1;</span></span><br><span class="line">    <span class="comment">#&#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="attribute">location</span> <span class="regexp">~ \.php$</span> &#123;</span><br><span class="line">        <span class="attribute">fastcgi_pass</span>   <span class="number">172.17.0.3:9000</span>; <span class="comment"># php72 容器的ip， 获取 docker inspect php容器的名称或容器ID， 假如使用-link 参数的情况下，这里填写链接容器的名称 phpfmp, --link php72:phpfmp</span></span><br><span class="line">        <span class="attribute">fastcgi_index</span>  index.php;</span><br><span class="line">        <span class="attribute">include</span>        fastcgi_params;</span><br><span class="line">        <span class="attribute">fastcgi_param</span>  PATH_INFO <span class="variable">$fastcgi_path_info</span>;</span><br><span class="line">        <span class="attribute">fastcgi_param</span>  SCRIPT_FILENAME  /usr/share/nginx/html<span class="variable">$fastcgi_script_name</span>; <span class="comment"># /var/www/html 是php文件执行目录</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># deny access to .htaccess files, if Apache's document root</span></span><br><span class="line">    <span class="comment"># concurs with nginx's one</span></span><br><span class="line">    <span class="comment">#</span></span><br><span class="line">    <span class="comment">#location ~ /\.ht &#123;</span></span><br><span class="line">    <span class="comment">#    deny  all;</span></span><br><span class="line">    <span class="comment">#&#125;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 加载配置</span><br><span class="line"><span class="attribute">docker</span> exec -ti nginx_ bash</span><br><span class="line"></span><br><span class="line">service nginx reload</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="PHP安装扩展："><a href="#PHP安装扩展：" class="headerlink" title="PHP安装扩展："></a>PHP安装扩展：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -ti php72 bash</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /usr/<span class="built_in">local</span>/bin</span><br><span class="line"></span><br><span class="line">docker-php-ext-install pdo pdo-mysql // 等等扩展</span><br></pre></td></tr></table></figure>
+
+<h3 id="参数：-1"><a href="#参数：-1" class="headerlink" title="参数："></a>参数：</h3><ul>
+<li><code>-t</code>:为容器重新分配一个伪输入终端，通常与 -i 同时使用</li>
+<li><code>-i</code>:以交互模式运行容器，通常与 -t 同时使用</li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Docker/">Docker</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2019/01/11/window/"><span>window</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2019/01/11/window/" rel="bookmark">
+        <time class="entry-date published" datetime="2019-01-11T06:31:18.000Z">
+          2019-01-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="Window-10-激活命令"><a href="#Window-10-激活命令" class="headerlink" title="Window 10 激活命令"></a>Window 10 激活命令</h1><p>1、<code>Ctrl + R</code> 在运行中输入<code>cmd</code>。</p>
+<p>2、输入<code>slmgr.vbs /upk</code> (此时弹出窗口显未“已成功卸载了产品密钥”)</p>
+<p>3、输入<code>slmgr /ipk W269N-WFGWX-YVC9B-4J6C9-T83GX</code> (弹出窗口提示：“成功的安装了产品密钥”)</p>
+<p>4、输入<code>slmgr /skms zh.us.to</code> （弹出窗口提示：“密钥管理服务计算机名成功的设置为 zh.us.to”）</p>
+<p>5、最后输入<code>slmgr /ato</code>（弹出窗口提示：“成功的激活了产品”）</p>
+<blockquote>
+<p>注：如有侵权问题，请联系本人，删除。</p>
+</blockquote>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/Window/">Window</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Window/">Window</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/11/25/duplicate-emails/"><span>duplicate-emails</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/25/duplicate-emails/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-25T03:14:01.000Z">
+          2018-11-25
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="leetcode-182-查找重复的电子邮箱"><a href="#leetcode-182-查找重复的电子邮箱" class="headerlink" title="leetcode - 182. 查找重复的电子邮箱"></a>leetcode - 182. 查找重复的电子邮箱</h1><h2 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h2><p>编写一个 SQL 查询，查找 Person 表中所有重复的电子邮箱。</p>
+<p>示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+----+---------+</span><br><span class="line">| Id | Email   |</span><br><span class="line">+----+---------+</span><br><span class="line">| 1  | a@b.com |</span><br><span class="line">| 2  | c@d.com |</span><br><span class="line">| 3  | a@b.com |</span><br><span class="line">+----+---------+</span><br></pre></td></tr></table></figure>
+
+<p>根据以上输入，你的查询应返回以下结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+---------+</span><br><span class="line">| Email   |</span><br><span class="line">+---------+</span><br><span class="line">| a@b.com |</span><br><span class="line">+---------+</span><br></pre></td></tr></table></figure>
+<p>说明：所有电子邮箱都是小写字母。</p>
+<h2 id="解答："><a href="#解答：" class="headerlink" title="解答："></a>解答：</h2><ul>
+<li>SQL<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> Email <span class="keyword">from</span> Person <span class="keyword">where</span> <span class="keyword">Id</span> <span class="keyword">in</span> (<span class="keyword">select</span> <span class="keyword">ID</span> <span class="keyword">from</span> Person <span class="keyword">group</span> <span class="keyword">by</span> Email <span class="keyword">having</span> <span class="keyword">count</span>(Email) &gt;= <span class="number">2</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/SQL/">SQL</a>, <a href="/categories/SQL/leetcode/">leetcode</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/SQL/">SQL</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/11/11/valid-parentheses/"><span>valid-parentheses</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/11/11/valid-parentheses/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-11-11T06:01:15.000Z">
+          2018-11-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="leetcode-20-有效的括号"><a href="#leetcode-20-有效的括号" class="headerlink" title="leetcode - 20. 有效的括号"></a>leetcode - 20. 有效的括号</h1><h2 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">给定一个只包括 &#39;(&#39;，&#39;)&#39;，&#39;&#123;&#39;，&#39;&#125;&#39;，&#39;[&#39;，&#39;]&#39; 的字符串，判断字符串是否有效。</span><br><span class="line"></span><br><span class="line">有效字符串需满足：</span><br><span class="line"></span><br><span class="line">左括号必须用相同类型的右括号闭合。</span><br><span class="line">左括号必须以正确的顺序闭合。</span><br><span class="line">注意空字符串可被认为是有效字符串。</span><br></pre></td></tr></table></figure>
+
+<h2 id="解答"><a href="#解答" class="headerlink" title="解答:"></a>解答:</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一种解法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isValid</span><span class="params">(s <span class="keyword">string</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">   <span class="keyword">var</span> tmp []<span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	arr := strings.Split(s, <span class="string">""</span>)</span><br><span class="line">	<span class="keyword">for</span> _, x := <span class="keyword">range</span> arr &#123;</span><br><span class="line">		c := x</span><br><span class="line">		<span class="keyword">if</span> c == <span class="string">"("</span> || c == <span class="string">"["</span> || c == <span class="string">"&#123;"</span> &#123;</span><br><span class="line">			tmp = <span class="built_in">append</span>(tmp, c)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">len</span>(tmp) == <span class="number">0</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			charTop := tmp[<span class="built_in">len</span>(tmp)<span class="number">-1</span>]</span><br><span class="line">			tmp = <span class="built_in">append</span>(tmp[:<span class="built_in">len</span>(tmp)<span class="number">-1</span>], tmp[<span class="built_in">len</span>(tmp):]...)</span><br><span class="line">			<span class="keyword">if</span> c == <span class="string">")"</span> &amp;&amp; charTop != <span class="string">"("</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> c == <span class="string">"]"</span> &amp;&amp; charTop != <span class="string">"["</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> c == <span class="string">"&#125;"</span> &amp;&amp; charTop != <span class="string">"&#123;"</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(tmp) != <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 第二种解法：</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">isValid</span><span class="params">(s <span class="keyword">string</span>)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> (</span><br><span class="line">		tmp  []<span class="keyword">string</span></span><br><span class="line">		True <span class="keyword">bool</span> = <span class="literal">true</span></span><br><span class="line">	)</span><br><span class="line">	validMap := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>&#123;</span><br><span class="line">		<span class="string">")"</span>: <span class="string">"("</span>,</span><br><span class="line">		<span class="string">"&#125;"</span>: <span class="string">"&#123;"</span>,</span><br><span class="line">		<span class="string">"]"</span>: <span class="string">"["</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	sArray := strings.Split(s, <span class="string">""</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, x := <span class="keyword">range</span> sArray &#123;</span><br><span class="line">		<span class="comment">// fmt.Println(x)</span></span><br><span class="line">		<span class="keyword">if</span> _, ok := validMap[x]; !ok &#123;</span><br><span class="line">			tmp = <span class="built_in">append</span>(tmp, x)</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">len</span>(tmp) != <span class="number">0</span> &#123;</span><br><span class="line">			v := tmp[<span class="built_in">len</span>(tmp)<span class="number">-1</span>]</span><br><span class="line">			tmp = <span class="built_in">append</span>(tmp[:<span class="built_in">len</span>(tmp)<span class="number">-1</span>], tmp[<span class="built_in">len</span>(tmp):]...)</span><br><span class="line">			<span class="keyword">if</span> v != validMap[x] &#123;</span><br><span class="line">				True = <span class="literal">false</span></span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			True = <span class="literal">false</span></span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(tmp) != <span class="number">0</span> &#123;</span><br><span class="line">		True = <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> True</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/Go/">Go</a>, <a href="/categories/Go/algorithm/">algorithm</a>, <a href="/categories/Go/algorithm/leetcode/">leetcode</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Go/">Go</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/10/16/two-sum/"><span>two-sum</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/10/16/two-sum/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-10-16T02:05:46.000Z">
+          2018-10-16
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="leetcode-1-两数之和"><a href="#leetcode-1-两数之和" class="headerlink" title="# leetcode - 1. 两数之和"></a># leetcode - 1. 两数之和</h1><h2 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h2><p>给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那 两个 整数，并返回他们的数组下标。</p>
+<p>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p>
+<p>示例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">给定 nums &#x3D; [2, 7, 11, 15], target &#x3D; 9</span><br><span class="line"></span><br><span class="line">因为 nums[0] + nums[1] &#x3D; 2 + 7 &#x3D; 9</span><br><span class="line">所以返回 [0, 1]</span><br></pre></td></tr></table></figure>
+
+<h2 id="解答："><a href="#解答：" class="headerlink" title="解答："></a>解答：</h2><ul>
+<li>golang </li>
+</ul>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">twoSum</span><span class="params">(nums []<span class="keyword">int</span>, target <span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">    hum_map := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]<span class="keyword">int</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i, x := <span class="keyword">range</span> nums &#123;</span><br><span class="line">        mus := target - x</span><br><span class="line">        <span class="keyword">if</span> _, ok := hum_map[mus]; ok &#123;</span><br><span class="line">            <span class="keyword">return</span> []<span class="keyword">int</span>&#123;i, hum_map[mus]&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        hum_map[x] = i</span><br><span class="line">    &#125; </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">twoSum</span><span class="params">(self, nums, target)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type nums: List[int]</span></span><br><span class="line"><span class="string">        :type target: int</span></span><br><span class="line"><span class="string">        :rtype: List[int]</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        hum_map = dict()</span><br><span class="line">        <span class="keyword">for</span> i, x <span class="keyword">in</span> enumerate(nums):</span><br><span class="line">            <span class="keyword">if</span> target - x <span class="keyword">in</span> hum_map:</span><br><span class="line">                <span class="keyword">return</span> [i, hum_map[target - x]]</span><br><span class="line">            hum_map[x] = i</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/Go/">Go</a>, <a href="/categories/Go/Python/">Python</a>, <a href="/categories/Go/Python/algorithm/">algorithm</a>, <a href="/categories/Go/Python/algorithm/leetcode/">leetcode</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Go/">Go</a><a href="/tags/Python/">Python</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/08/02/Merging/"><span>Merging</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/08/02/Merging/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-08-02T09:51:39.000Z">
+          2018-08-02
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h1><ul>
+<li>时间复杂度 O(n)</li>
+<li>空间复杂度 O(log2n)</li>
+</ul>
+<h2 id="PHP："><a href="#PHP：" class="headerlink" title="PHP："></a>PHP：</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">merge</span><span class="params">(array $left, array $rigth)</span> : <span class="title">array</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $result = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (count($left) &amp;&amp; count($rigth)) &#123;</span><br><span class="line">        $result[] = $left[<span class="number">0</span>] &lt; $rigth[<span class="number">0</span>] ? array_shift($left) : array_shift($rigth);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> array_merge($result, $left, $rigth);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">al_merge_sort</span><span class="params">(array $arr)</span> : <span class="title">array</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $len = count($arr);</span><br><span class="line">    <span class="keyword">if</span> ($len &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> $arr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    $mid = intval($len / <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    $left = array_slice($arr, <span class="number">0</span>, $mid);</span><br><span class="line">    $rigth = array_slice($arr, $mid);</span><br><span class="line"></span><br><span class="line">    $left = al_merge_sort($left);</span><br><span class="line">    $rigth = al_merge_sort($rigth);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> merge($left, $rigth);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">print_r(al_merge_sort([<span class="number">9</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">55</span>, <span class="number">56</span>]));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Array</span></span><br><span class="line"><span class="comment">//     (</span></span><br><span class="line"><span class="comment">//         [0] =&gt; 1</span></span><br><span class="line"><span class="comment">//         [1] =&gt; 2</span></span><br><span class="line"><span class="comment">//         [2] =&gt; 3</span></span><br><span class="line"><span class="comment">//         [3] =&gt; 5</span></span><br><span class="line"><span class="comment">//         [4] =&gt; 6</span></span><br><span class="line"><span class="comment">//         [5] =&gt; 7</span></span><br><span class="line"><span class="comment">//         [6] =&gt; 9</span></span><br><span class="line"><span class="comment">//         [7] =&gt; 55</span></span><br><span class="line"><span class="comment">//         [8] =&gt; 56</span></span><br><span class="line"><span class="comment">//     )</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Go："><a href="#Go：" class="headerlink" title="Go："></a>Go：</h2><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">merge</span><span class="params">(left, rigth []<span class="keyword">int</span>)</span> <span class="params">(result []<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	l, r := <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">	</span><br><span class="line">    <span class="keyword">for</span> l &lt; <span class="built_in">len</span>(left) &amp;&amp; r &lt; <span class="built_in">len</span>(rigth) &#123;</span><br><span class="line">        <span class="keyword">if</span> left[l] &lt; rigth[r] &#123;</span><br><span class="line">            result = <span class="built_in">append</span>(result, left[l])</span><br><span class="line">            l ++</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            result = <span class="built_in">append</span>(result, rigth[r])</span><br><span class="line">            r ++</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    result = <span class="built_in">append</span>(result, left[l:]...)</span><br><span class="line">    result = <span class="built_in">append</span>(result, rigth[r:]...)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">al_merg_sort</span><span class="params">(arr []<span class="keyword">int</span>)</span> []<span class="title">int</span></span> &#123;</span><br><span class="line">    length := <span class="built_in">len</span>(arr)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> length &lt;= <span class="number">1</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> arr</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    mid := length / <span class="number">2</span></span><br><span class="line"></span><br><span class="line">    left := al_merg_sort(arr[:mid])</span><br><span class="line">    rigth := al_merg_sort(arr[mid:])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> merge(left, rigth)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    arr := []<span class="keyword">int</span>&#123;<span class="number">31</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">27</span>, <span class="number">18</span>, <span class="number">1</span> ,<span class="number">3</span>, <span class="number">6</span>, <span class="number">8</span>&#125;</span><br><span class="line">    fmt.Println(al_merg_sort(arr))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/PHP/">PHP</a>, <a href="/categories/PHP/Golang/">Golang</a>, <a href="/categories/PHP/Golang/algorithm/">algorithm</a>, <a href="/categories/PHP/Golang/algorithm/leetcode/">leetcode</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/PHP/">PHP</a><a href="/tags/Golang/">Golang</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+  <article>
+
+  
+    
+    <h3 class="article-title"><a href="/2018/02/11/length-of-last-word/"><span>length-of-last-word</span></a></h3>
+    
+  
+
+  <div class="article-top-meta">
+    <span class="posted-on">
+      <a href="/2018/02/11/length-of-last-word/" rel="bookmark">
+        <time class="entry-date published" datetime="2018-02-11T06:09:42.000Z">
+          2018-02-11
+        </time>
+      </a>
+    </span>
+  </div>
+
+
+  
+
+  <div class="article-content">
+    <div class="entry">
+      
+        <h1 id="leetcode-58-最后一个单词的长度"><a href="#leetcode-58-最后一个单词的长度" class="headerlink" title="leetcode - 58. 最后一个单词的长度"></a>leetcode - 58. 最后一个单词的长度</h1><h2 id="题目："><a href="#题目：" class="headerlink" title="题目："></a>题目：</h2><p>给定一个仅包含大小写字母和空格 ‘ ‘ 的字符串，返回其最后一个单词的长度。</p>
+<p>如果不存在最后一个单词，请返回 0 。</p>
+<p>说明：一个单词是指由字母组成，但不包含任何空格的字符串。</p>
+<p>示例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入: &quot;Hello World&quot;</span><br><span class="line">输出: 5</span><br></pre></td></tr></table></figure>
+
+<h2 id="解答："><a href="#解答：" class="headerlink" title="解答："></a>解答：</h2><ul>
+<li>golang</li>
+</ul>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">lengthOfLastWord</span><span class="params">(s <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	strArray := strings.Split(s, <span class="string">" "</span>)</span><br><span class="line">	mun := <span class="built_in">len</span>(strArray)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> mun &lt;= <span class="number">1</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">len</span>([]<span class="keyword">byte</span>(strArray[<span class="number">0</span>]))</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> tmp <span class="keyword">string</span></span><br><span class="line">	<span class="keyword">for</span> _, x := <span class="keyword">range</span> strArray &#123;</span><br><span class="line">		<span class="keyword">if</span> x == <span class="string">""</span> &#123;</span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line">		tmp = x</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">len</span>([]<span class="keyword">byte</span>(tmp))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Python</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">lengthOfLastWord</span><span class="params">(self, s)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        :type s: str</span></span><br><span class="line"><span class="string">        :rtype: int</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        array = s.split()</span><br><span class="line">        <span class="keyword">if</span> len(array) &gt;= <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">return</span> len(array[<span class="number">-1</span>])</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">solution = Solution()</span><br><span class="line">print(solution.lengthOfLastWord(<span class="string">"hello world"</span>))</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+
+    
+      
+
+    <span class="post-categories">
+      <i class="icon-categories"></i>
+        <a href="/categories/Go/">Go</a>, <a href="/categories/Go/Python/">Python</a>, <a href="/categories/Go/Python/algorithm/">algorithm</a>, <a href="/categories/Go/Python/algorithm/leetcode/">leetcode</a>
+    </span>
+    
+
+    
+    
+
+    <span class="post-tags">
+      <i class="icon-tags"></i>
+        <a href="/tags/Go/">Go</a><a href="/tags/Python/">Python</a>
+    </span>
+    
+
+    </div>
+
+    
+  </div>
+</article>
+
+
+
+
+<nav class="pagination">
+  
+  
+  <a href="/page/2/" class="pagination-next">Next</a>
+  
+</nav>
+    </main>
+
+    <footer class="site-footer">
+  <p class="site-info">
+    Proudly powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and
+    Theme by <a href="https://github.com/CodeDaraW/Hacker" target="_blank">Hacker</a>
+    </br>
+    
+    &copy; 2020 Guo
+    
+  </p>
+</footer>
+    
+  </div>
+</div>
+</body>
+</html>
