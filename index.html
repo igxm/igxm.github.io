@@ -65,7 +65,7 @@
 
   
     
-    <h3 class="article-title"><a href="/2019/04/02/m3u8文件下载并合并/"><span>m3u8文件下载并合并</span></a></h3>
+    <h3 class="article-title"><a href="/2019/04/02/m3u8文件下载并合并/"><span>M3u8文件下载并合并</span></a></h3>
     
   
 
@@ -88,11 +88,14 @@
         <h2 id="原由："><a href="#原由：" class="headerlink" title="原由："></a>原由：</h2><p>最近在极客时间上购买一波 <code>Go语言从入门到实战</code> 视频课程，但又不想受到网络环境的限制，所以就有了这篇文章。</p>
 <h2 id="操作："><a href="#操作：" class="headerlink" title="操作："></a>操作：</h2><p>一、ffmpeg 下载和安装</p>
 <ul>
-<li>mac OS X ：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 homebrew</span></span><br><span class="line">/usr/bin/ruby -e <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 ffmpeg</span></span><br><span class="line">brew install ffmpeg</span><br></pre></td></tr></table></figure></li>
-<li>Linux 安装：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ffmpeg</span><br></pre></td></tr></table></figure>
-
-</li>
+<li>mac OS X ：</li>
 </ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装 homebrew</span></span><br><span class="line">/usr/bin/ruby -e <span class="string">"<span class="variable">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 ffmpeg</span></span><br><span class="line">brew install ffmpeg</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Linux 安装：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ffmpeg</span><br></pre></td></tr></table></figure>
+
 <p>二、使用ffmpeg下载且合并成mp4</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg  -i <span class="string">"http://xxxxxx/video/movie.m3u8"</span> -vcodec copy -acodec copy -absf aac_adtstoasc  output.mp4</span><br><span class="line"></span><br><span class="line"><span class="comment"># m3u8 链接， output.mp4 输出文件名</span></span><br></pre></td></tr></table></figure>
 
